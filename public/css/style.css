@@ -59,23 +59,94 @@ body {
 .step-item { border-bottom: 1px dashed #dee2e6; padding-bottom: 12px; }
 .step-item:last-child { border-bottom: none; }
 
-/* ── サムネイル ── */
+/* ── 閲覧モード：画像カード ── */
+.step-image-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  cursor: pointer;
+  aspect-ratio: 4/3;
+  background: #f8f9fa;
+}
+.step-image-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform .2s;
+}
+.step-image-card:hover img { transform: scale(1.03); }
+.step-image-overlay {
+  position: absolute; inset: 0;
+  background: rgba(0,0,0,.25);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity .2s;
+  color: white; font-size: 24px;
+}
+.step-image-card:hover .step-image-overlay { opacity: 1; }
+
+/* ── 閲覧モード：画像なし表示 ── */
+.step-image-empty {
+  background: #f8f9fa;
+  border: 1px dashed #dee2e6;
+  border-radius: 8px;
+  padding: 14px 16px;
+  display: flex; align-items: center;
+}
+
+/* ── 閲覧モード：画像エリア全体 ── */
+.step-image-area { margin-top: 8px; }
+
+/* ── 編集モード：画像カード ── */
+.step-image-edit-card {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #dee2e6;
+  aspect-ratio: 4/3;
+  background: #f8f9fa;
+  cursor: pointer;
+}
+.step-image-edit-card img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.step-image-delete-btn {
+  position: absolute; top: 6px; right: 6px;
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: rgba(200,0,0,.85);
+  border: none; color: white;
+  font-size: 11px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; transition: background .15s;
+}
+.step-image-delete-btn:hover { background: #c0392b; }
+
+/* ── 編集モード：画像アップロードエリア ── */
+.img-upload-area-lg {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  border: 2px dashed #adb5bd;
+  border-radius: 10px;
+  background: #f8f9fa;
+  cursor: pointer;
+  aspect-ratio: 4/3;
+  transition: all .18s;
+}
+.img-upload-area-lg:hover {
+  border-color: #2C5F8A;
+  background: #EBF2F8;
+}
+.img-upload-area-lg:hover i,
+.img-upload-area-lg:hover span { color: #2C5F8A !important; }
+
+/* ── 旧サムネイル（後方互換） ── */
 .step-thumb {
   width: 90px; height: 70px; object-fit: cover;
   border-radius: 6px; border: 1px solid #dee2e6;
   cursor: pointer; transition: opacity .15s;
 }
 .step-thumb:hover { opacity: .8; }
-
-/* ── 画像アップロードボタン ── */
-.img-upload-label {
-  width: 90px; height: 70px; border-radius: 6px;
-  border: 2px dashed #adb5bd; background: #f8f9fa;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; color: #6c757d;
-  cursor: pointer; transition: all .18s;
-}
-.img-upload-label:hover { border-color: #2C5F8A; color: #2C5F8A; background: #EBF2F8; }
 
 /* ── 編集アイテム ── */
 .step-edit-item { background: #fafafa; }

@@ -229,18 +229,31 @@ function renderDetail() {
 // ── セクション表示 ──────────────────────────────────────────
 function renderSectionView(sec) {
   const steps = (sec.steps || []).map((st, i) => `
-    <div class="step-item d-flex gap-3 mb-3">
-      <div class="step-num flex-shrink-0">${i + 1}</div>
-      <div class="flex-grow-1">
-        <p class="mb-2">${st.step_text || ''}</p>
+    <div class="step-item mb-4">
+      <!-- ステップ番号 + テキスト -->
+      <div class="d-flex gap-3 align-items-start mb-3">
+        <div class="step-num flex-shrink-0">${i + 1}</div>
+        <p class="mb-0 pt-1">${st.step_text || ''}</p>
+      </div>
+      <!-- 画像エリア（常に表示） -->
+      <div class="step-image-area ms-5">
         ${(st.images||[]).length > 0 ? `
-          <div class="d-flex gap-2 flex-wrap">
+          <div class="row g-3">
             ${st.images.map(img => `
-              <img src="/uploads/${img.filename}" class="step-thumb"
-                   onclick="previewImage('/uploads/${img.filename}')" alt="手順画像">
+              <div class="col-12 col-md-4">
+                <div class="step-image-card" onclick="previewImage('/uploads/${img.filename}')">
+                  <img src="/uploads/${img.filename}" alt="手順画像">
+                  <div class="step-image-overlay"><i class="bi bi-zoom-in"></i></div>
+                </div>
+              </div>
             `).join('')}
           </div>
-        ` : ''}
+        ` : `
+          <div class="step-image-empty">
+            <i class="bi bi-image text-muted"></i>
+            <span class="text-muted small ms-2">画像なし</span>
+          </div>
+        `}
       </div>
     </div>
   `).join('') || '<p class="text-muted small">ステップがありません</p>';
@@ -259,32 +272,40 @@ function renderSectionView(sec) {
 // ── セクション編集 ──────────────────────────────────────────
 function renderSectionEdit(sec) {
   const steps = (sec.steps || []).map((st, i) => `
-    <div class="step-edit-item border rounded p-3 mb-2 bg-light" id="step-edit-${st.id}">
+    <div class="step-edit-item border rounded p-3 mb-3 bg-light" id="step-edit-${st.id}">
       <div class="d-flex align-items-center justify-content-between mb-2">
         <span class="badge bg-primary">ステップ ${i + 1}</span>
         <button class="btn btn-outline-danger btn-sm" onclick="deleteStep(${st.id})">
           <i class="bi bi-trash"></i>
         </button>
       </div>
-      <div class="mb-2">
+      <!-- 説明文 -->
+      <div class="mb-3">
         <label class="form-label small fw-semibold">説明文</label>
         <textarea class="form-control form-control-sm" id="step-text-${st.id}" rows="3">${st.step_text || ''}</textarea>
       </div>
+      <!-- 画像エリア（大きく） -->
       <div>
         <label class="form-label small fw-semibold">画像（最大3枚）</label>
-        <div class="d-flex gap-2 flex-wrap mb-2">
+        <div class="row g-2 mb-2">
           ${(st.images||[]).map(img => `
-            <div class="position-relative">
-              <img src="/uploads/${img.filename}" class="step-thumb" onclick="previewImage('/uploads/${img.filename}')">
-              <button class="btn btn-danger btn-sm position-absolute top-0 end-0 p-0" style="width:18px;height:18px;font-size:10px;line-height:1;"
-                      onclick="deleteImage(${img.id}, ${st.id})">×</button>
+            <div class="col-12 col-md-4">
+              <div class="step-image-edit-card">
+                <img src="/uploads/${img.filename}" onclick="previewImage('/uploads/${img.filename}')">
+                <button class="step-image-delete-btn" onclick="deleteImage(${img.id}, ${st.id})">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
             </div>
           `).join('')}
           ${(st.images||[]).length < 3 ? `
-            <label class="img-upload-label" title="画像を追加">
-              <input type="file" accept="image/*" class="d-none" onchange="uploadImage(this, ${st.id})">
-              <i class="bi bi-camera-fill"></i>
-            </label>
+            <div class="col-12 col-md-4">
+              <label class="img-upload-area-lg">
+                <input type="file" accept="image/*" class="d-none" onchange="uploadImage(this, ${st.id})">
+                <i class="bi bi-camera-fill fs-3 text-muted"></i>
+                <span class="small text-muted mt-1">画像を追加</span>
+              </label>
+            </div>
           ` : ''}
         </div>
       </div>

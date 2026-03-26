@@ -1,0 +1,90 @@
+/* ============================================================
+   style.css  ― 見た目・デザイン
+   ============================================================ */
+
+body {
+  background-color: #F4F1EC;
+  font-family: 'Noto Sans JP', 'Hiragino Sans', sans-serif;
+}
+
+/* ── ログイン ── */
+.login-card  { width: 400px; border-radius: 16px; }
+.login-icon  { font-size: 40px; color: #2C5F8A; }
+
+/* ── トップカード ── */
+.top-card {
+  cursor: pointer;
+  border-radius: 12px;
+  transition: transform .18s, box-shadow .18s;
+}
+.top-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,.12)!important; }
+.top-card-disabled { opacity: .45; pointer-events: none; }
+.top-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 22px; margin: 0 auto;
+}
+
+/* ── クライアントカード ── */
+.client-card {
+  cursor: pointer; border-radius: 12px;
+  transition: transform .18s, box-shadow .18s;
+}
+.client-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,.1)!important; }
+.client-avatar {
+  width: 40px; height: 40px; border-radius: 10px;
+  color: #fff; font-weight: 700; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+}
+.client-avatar-lg {
+  width: 52px; height: 52px; border-radius: 14px;
+  color: #fff; font-weight: 700; font-size: 22px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+
+/* ── サイドバー ── */
+.sticky-sidebar { position: sticky; top: 76px; border-radius: 12px; }
+.list-group-item { font-size: 13px; }
+.list-group-item.active { background-color: #2C5F8A; border-color: #2C5F8A; }
+
+/* ── ステップ ── */
+.step-num {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: #2C5F8A; color: #fff;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 2px;
+}
+.step-item { border-bottom: 1px dashed #dee2e6; padding-bottom: 12px; }
+.step-item:last-child { border-bottom: none; }
+
+/* ── サムネイル ── */
+.step-thumb {
+  width: 90px; height: 70px; object-fit: cover;
+  border-radius: 6px; border: 1px solid #dee2e6;
+  cursor: pointer; transition: opacity .15s;
+}
+.step-thumb:hover { opacity: .8; }
+
+/* ── 画像アップロードボタン ── */
+.img-upload-label {
+  width: 90px; height: 70px; border-radius: 6px;
+  border: 2px dashed #adb5bd; background: #f8f9fa;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #6c757d;
+  cursor: pointer; transition: all .18s;
+}
+.img-upload-label:hover { border-color: #2C5F8A; color: #2C5F8A; background: #EBF2F8; }
+
+/* ── 編集アイテム ── */
+.step-edit-item { background: #fafafa; }
+
+/* ── カード ── */
+.card { border-radius: 12px; }
+
+/* ── レスポンシブ ── */
+@media (max-width: 768px) {
+  .sticky-sidebar { position: static; }
+  .login-card { width: 100%; }
+}

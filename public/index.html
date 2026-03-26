@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>発送マニュアル</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/css/style.css" rel="stylesheet">
+</head>
+<body>
+
+<!-- ナビバー -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top" id="navbar" style="display:none!important;">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-bold" href="#" onclick="gotoTop()">
+      <i class="bi bi-box-seam me-2"></i>発送マニュアル
+    </a>
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <span class="badge" id="nav-role-badge"></span>
+      <span class="text-white small" id="nav-username"></span>
+      <button class="btn btn-outline-light btn-sm" onclick="logout()">ログアウト</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============================================================ -->
+<!-- ログイン画面                                                  -->
+<!-- ============================================================ -->
+<div id="screen-login">
+  <div class="login-wrap d-flex align-items-center justify-content-center min-vh-100">
+    <div class="card login-card shadow-lg border-0">
+      <div class="card-body p-5">
+        <div class="text-center mb-4">
+          <div class="login-icon mb-3"><i class="bi bi-box-seam"></i></div>
+          <h4 class="fw-bold text-primary">発送マニュアル</h4>
+          <p class="text-muted small">ログインしてください</p>
+        </div>
+
+        <!-- ロール選択 -->
+        <div class="btn-group w-100 mb-4" role="group">
+          <input type="radio" class="btn-check" name="role" id="role-admin" value="admin" checked>
+          <label class="btn btn-outline-primary" for="role-admin">
+            <i class="bi bi-pencil-square me-1"></i>編集者
+          </label>
+          <input type="radio" class="btn-check" name="role" id="role-viewer" value="viewer">
+          <label class="btn btn-outline-primary" for="role-viewer">
+            <i class="bi bi-eye me-1"></i>閲覧者
+          </label>
+        </div>
+
+        <div id="login-error" class="alert alert-danger d-none small py-2"></div>
+
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">ユーザー名</label>
+          <input type="text" class="form-control" id="login-user" placeholder="ユーザー名">
+        </div>
+        <div class="mb-4">
+          <label class="form-label small fw-semibold">パスワード</label>
+          <input type="password" class="form-control" id="login-pass" placeholder="パスワード"
+                 onkeydown="if(event.key==='Enter') doLogin()">
+        </div>
+        <button class="btn btn-primary w-100 fw-bold" onclick="doLogin()">
+          <i class="bi bi-box-arrow-in-right me-1"></i>ログイン
+        </button>
+        <div class="text-center mt-3 text-muted" style="font-size:12px;">
+          編集者：admin / admin123　 閲覧者：staff / staff123
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- トップ画面（見る / 作る）                                     -->
+<!-- ============================================================ -->
+<div id="screen-top" class="d-none">
+  <div class="container py-5" style="max-width:680px;">
+    <p class="text-muted mb-1">ようこそ、<span id="top-username" class="fw-semibold"></span>さん</p>
+    <h3 class="fw-bold mb-4">何をしますか？</h3>
+    <div class="row g-3">
+      <div class="col-6">
+        <div class="card top-card h-100 border-0 shadow-sm" onclick="gotoList('view')">
+          <div class="card-body text-center py-4">
+            <div class="top-icon bg-primary-subtle mb-3"><i class="bi bi-book text-primary"></i></div>
+            <h6 class="fw-bold">マニュアルを見る</h6>
+            <p class="small text-muted mb-0">クライアント別の発送・梱包ルールを確認する</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-6">
+        <div class="card top-card h-100 border-0 shadow-sm" id="card-edit" onclick="gotoList('edit')">
+          <div class="card-body text-center py-4">
+            <div class="top-icon bg-warning-subtle mb-3"><i class="bi bi-pencil-square text-warning"></i></div>
+            <h6 class="fw-bold">マニュアルを作る・編集する</h6>
+            <p class="small text-muted mb-0">新しいクライアントの登録や内容の更新</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- クライアント一覧                                              -->
+<!-- ============================================================ -->
+<div id="screen-list" class="d-none">
+  <div class="container py-4">
+    <!-- パンくず -->
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="#" onclick="gotoTop()">ホーム</a></li>
+        <li class="breadcrumb-item active" id="list-breadcrumb"></li>
+      </ol>
+    </nav>
+
+    <div class="d-flex align-items-center justify-content-between mb-3 gap-2 flex-wrap">
+      <h5 class="fw-bold mb-0" id="list-title"></h5>
+      <button class="btn btn-primary btn-sm d-none" id="btn-new-client" onclick="openModal('modal-new-client')">
+        <i class="bi bi-plus-lg me-1"></i>新規クライアント
+      </button>
+    </div>
+
+    <!-- 検索 -->
+    <div class="mb-3">
+      <div class="input-group input-group-sm" style="max-width:320px;">
+        <span class="input-group-text"><i class="bi bi-search"></i></span>
+        <input type="text" class="form-control" placeholder="クライアント名で検索…" id="search-input" oninput="filterClients()">
+      </div>
+    </div>
+
+    <div id="client-grid" class="row g-3"></div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- 詳細画面                                                      -->
+<!-- ============================================================ -->
+<div id="screen-detail" class="d-none">
+  <div class="container py-4">
+    <!-- パンくず -->
+    <nav aria-label="breadcrumb" class="mb-3">
+      <ol class="breadcrumb small">
+        <li class="breadcrumb-item"><a href="#" onclick="gotoTop()">ホーム</a></li>
+        <li class="breadcrumb-item"><a href="#" id="detail-nav-list" onclick="gotoListFromDetail()"></a></li>
+        <li class="breadcrumb-item active" id="detail-nav-client"></li>
+      </ol>
+    </nav>
+
+    <!-- 編集ツールバー -->
+    <div class="alert alert-warning d-none py-2 d-flex align-items-center gap-2 mb-3" id="edit-toolbar">
+      <i class="bi bi-pencil-fill text-warning"></i>
+      <span class="fw-semibold small flex-grow-1">編集モード</span>
+      <button class="btn btn-outline-secondary btn-sm" onclick="cancelEdit()">キャンセル</button>
+      <button class="btn btn-warning btn-sm fw-bold" onclick="saveClientMeta()">
+        <i class="bi bi-check-lg me-1"></i>保存する
+      </button>
+    </div>
+
+    <div class="row g-3">
+      <!-- サイドバー -->
+      <div class="col-lg-3">
+        <div class="card border-0 shadow-sm sticky-sidebar">
+          <div class="card-header bg-light small fw-bold py-2">マニュアル分類</div>
+          <div class="list-group list-group-flush" id="sidebar-nav"></div>
+          <div class="card-footer bg-white d-none" id="sidebar-add-btn">
+            <button class="btn btn-outline-primary btn-sm w-100" onclick="addSection()">
+              <i class="bi bi-plus-lg me-1"></i>分類を追加
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- メインコンテンツ -->
+      <div class="col-lg-9" id="detail-main"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- モーダル：新規クライアント                                    -->
+<!-- ============================================================ -->
+<div class="modal fade" id="modal-new-client" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-person-plus me-2"></i>新規クライアント登録</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">クライアント名 <span class="text-danger">*</span></label>
+          <input type="text" class="form-control" id="new-client-name" placeholder="例：山田商事">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">メモ</label>
+          <input type="text" class="form-control" id="new-client-memo" placeholder="例：ギフト専門、毎月定期便あり">
+        </div>
+        <div class="mb-3">
+          <label class="form-label small fw-semibold">分類タグ（カンマ区切り）</label>
+          <input type="text" class="form-control" id="new-client-tags" placeholder="例：梱包,発送,伝票処理">
+          <div class="form-text">未入力の場合「梱包・発送」が自動で作成されます</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">キャンセル</button>
+        <button class="btn btn-primary btn-sm fw-bold" onclick="addClient()">
+          <i class="bi bi-check-lg me-1"></i>登録する
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- モーダル：画像プレビュー -->
+<div class="modal fade" id="modal-img-preview" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 bg-transparent">
+      <div class="modal-body text-center p-0">
+        <img id="preview-img" src="" alt="プレビュー" class="img-fluid rounded shadow-lg" style="max-height:80vh;">
+        <button class="btn btn-light btn-sm mt-2" data-bs-dismiss="modal">閉じる</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- トースト通知 -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:9999;">
+  <div id="app-toast" class="toast align-items-center border-0" role="alert">
+    <div class="d-flex">
+      <div class="toast-body fw-semibold" id="toast-msg"></div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/app.js"></script>
+</body>
+</html>
